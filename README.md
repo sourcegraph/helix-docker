@@ -51,7 +51,7 @@ To start a long-running production container, do remember to volume the data dir
 docker run -d \
     --publish 1666:1666 \
     --env P4PASSWD=securepassword \
-    --volume ~/.helix-p4d-home:/p4
+    --volume ~/.helix-p4d-home:/p4 \
     sourcegraph/helix-p4d:2020.2
 ```
 
