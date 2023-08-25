@@ -13,7 +13,7 @@ To have a disposable Perforce Helix core server running, simply do:
 ```sh
 docker run --rm \
     --publish 1666:1666 \
-    sourcegraph/helix-p4d:2020.2
+    sourcegraph/helix-p4d:2023.1
 ```
 
 The above command makes the server avaialble locally at `:1666`, with a default super user `admin` and its password `pass12349ers`.
@@ -40,7 +40,7 @@ docker run --rm \
     --publish 1666:1666 \
     --env P4USER=amy \
     --env P4PASSWD=securepassword \
-    sourcegraph/helix-p4d:2020.2
+    sourcegraph/helix-p4d:2023.1
 ```
 
 > [!WARNING]
@@ -53,10 +53,35 @@ docker run -d \
     --publish 1666:1666 \
     --env P4PASSWD=securepassword \
     --volume ~/.helix-p4d-home:/p4 \
-    sourcegraph/helix-p4d:2020.2
+    sourcegraph/helix-p4d:2023.1
 ```
 
 Now you have a running server, please read our handbook for [how to set up the client side](https://handbook.sourcegraph.com/departments/technical-success/support/process/p4-enablement/).
+
+### Running Perforce Helix with SSL enabled
+
+Frist, generate some self-signed SSL certificates:
+
+```bash
+mkdir ssl
+pushd ssl
+openssl genrsa -out privatekey.txt 2048
+openssl req -new -key privatekey.txt -out certrequest.csr
+openssl x509 -req -days 365 -in certrequest.csr -signkey privatekey.txt -out certificate.txt
+rm certrequest.csr
+popd
+```
+
+Next, we need to run the server with `P4SSLDIR` set to a directory containing the SSL files, and set `P4PORT` to use SSL:
+
+```bash
+docker run --rm \
+    --publish 1666:1666 \
+    --env P4PORT=ssl:1666 \
+    --env P4SSLDIR=/ssl \
+    --volume ./ssl:/ssl \
+    sourcegraph/helix-p4d:2023.1
+```
 
 ## Credits
 
