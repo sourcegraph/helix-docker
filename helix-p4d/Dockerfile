@@ -23,8 +23,8 @@ RUN \
 # Do in-page search over https://package.perforce.com/apt/ubuntu/dists/focal/release/binary-amd64/Packages
 # for both "Package: helix-p4d" and "Package: helix-swarm-triggers".
 RUN \
-  apt-get install -y helix-p4d=2023.1-2468153~focal && \
-  apt-get install -y helix-swarm-triggers=2023.1-2414875~focal
+  apt-get install -y helix-p4d=2023.2-2523307~focal && \
+  apt-get install -y helix-swarm-triggers=2023.2-2474057~focal
 
 # Add external files
 COPY files/restore.sh /usr/local/bin/restore.sh
