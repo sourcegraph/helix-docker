@@ -1,6 +1,6 @@
 # helix-docker
 
-This repository contains a collection of source files for building Docker images for Perforce Helix. It exists purely because there is no working Docker solution in existence for Perforce Helix.
+This repository contains a collection of source files for building Docker images for Perforce Helix. It exists purely because there is no other working Docker solution in existence for Perforce Helix.
 
 ## helix-p4d
 
@@ -10,13 +10,13 @@ This directory contains the source files for building a Perforce Helix core serv
 
 The `helix-p4d/build.sh` script will build the docker image for you. If you don't provide a tag to the script it will tag the image as `sourcegraph/helix-p4d:latest`
 
-```
+```sh
 ./build.sh <tag>
 ```
 
 ### Usage
 
-To have a disposable Perforce Helix core server running, simply do:
+To have a disposable Perforce Helix core server running, simply run:
 
 ```sh
 docker run --rm \
@@ -24,7 +24,7 @@ docker run --rm \
     sourcegraph/helix-p4d:2023.1
 ```
 
-The above command makes the server avaialble locally at `:1666`, with a default super user `admin` and its password `pass12349ers`.
+The above command makes the server avaialable locally at port `1666`, with a default super user `admin` and its password `pass12349ers`.
 
 All available options and their default values:
 
@@ -41,7 +41,7 @@ P4CHARSET=utf8
 JNL_PREFIX=perforce-server
 ```
 
-Use the `--env` flag to override default:
+Use the `--env` flag to override default options:
 
 ```sh
 docker run --rm \
@@ -52,9 +52,9 @@ docker run --rm \
 ```
 
 > [!WARNING]
-> Please be noted that although the server survives over restarts (i.e. data are kept), but it may break if you change the options after the initial bootstrap (i.e. the very first run of the image, at when options are getting hard-coded to the Perforce Helix core server own configuration).
+> Please note that although the server survives over restarts (i.e. data is kept), it may break if you change the options after the initial bootstrap. This is because on the very first run options are getting hard-coded to the Perforce Helix Core server configuration.
 
-To start a long-running production container, do remember to volume the data directory (`P4HOME`) and replace the `--rm` flag with `-d` (detach):
+To start a long-running production container, do remember to mount a volume to the data directory (`P4HOME`) and replace the `--rm` flag with `-d` (detach). For example:
 
 ```sh
 docker run -d \
@@ -64,11 +64,11 @@ docker run -d \
     sourcegraph/helix-p4d:2023.1
 ```
 
-Now you have a running server, please read our handbook for [how to set up the client side](https://handbook.sourcegraph.com/departments/technical-success/support/process/p4-enablement/).
+Now that you have a running server, please read our handbook for [how to set up the client side](https://handbook.sourcegraph.com/departments/technical-success/support/process/p4-enablement/).
 
 ### Running Perforce Helix with SSL enabled
 
-Frist, generate some self-signed SSL certificates:
+First generate a self-signed certificate:
 
 ```bash
 mkdir ssl
@@ -80,7 +80,7 @@ rm certrequest.csr
 popd
 ```
 
-Next, we need to run the server with `P4SSLDIR` set to a directory containing the SSL files, and set `P4PORT` to use SSL:
+Then start the server with `P4SSLDIR` set to a directory containing the private key and certificate and set `P4PORT` to use SSL, like so:
 
 ```bash
 docker run --rm \
