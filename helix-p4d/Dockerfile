@@ -21,7 +21,7 @@ RUN apt-get update && \
 # Create perforce user and install Perforce Server
 # Do in-page search over https://package.perforce.com/apt/ubuntu/dists/focal/release/binary-amd64/Packages
 # for both "Package: helix-p4d" and "Package: helix-swarm-triggers".
-RUN apt-get update && apt-get install -y helix-p4d=2023.2-2523307~focal helix-swarm-triggers=2023.4-2531655~focal
+RUN apt-get update && apt-get install -y helix-p4d=2024.1-2625008~focal helix-swarm-triggers=2024.3-2628402~focal
 # Add external files
 COPY files/restore.sh /usr/local/bin/restore.sh
 COPY files/setup.sh /usr/local/bin/setup.sh
