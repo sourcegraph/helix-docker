@@ -1,19 +1,27 @@
 #!/bin/bash
 
-if [ ! -d "$P4ROOT/etc" ]; then
-    echo >&2 "First time installation, copying configuration from /etc/perforce to $P4ROOT/etc and relinking"
-    mkdir -p "$P4ROOT/etc"
-    cp -r /etc/perforce/* "$P4ROOT/etc/"
+opts=()
+
+# Check P4CHARSET environment variable
+if [ -z "${P4CHARSET:-}" ]; then
+    echo "Error: P4CHARSET environment variable is not set."
+    exit 255
+fi
+if [ "${P4CHARSET:-}" != "none" && "${P4CHARSET:-}" != "utf8" ]; then
+    echo "Error: P4CHARSET value unknown, expected 'none' or 'utf8'."
+    exit 255
 fi
 
-mv /etc/perforce /etc/perforce.orig
-ln -s "$P4ROOT/etc" /etc/perforce
-
-if ! p4dctl list 2>/dev/null | grep -q "$NAME"; then
-    /opt/perforce/sbin/configure-helix-p4d.sh "$NAME" -n -p "$P4PORT" -r "$P4ROOT" -u "$P4USER" -P "${P4PASSWD}" --case "$P4CASE" --unicode
+# If P4CHARSET is set to "none", do not pass --unicode. Otherwise include it.
+if [ "${P4CHARSET:-}" != "none" ]; then
+    opts+=(--unicode)
 fi
+
+# Run the container and get a terminal into it so you can cat the file to get the list of option (No known web documentation)
+/opt/perforce/sbin/configure-helix-p4d.sh "$P4NAME" -n -p "$P4PORT" -r "$P4HOME" -u "$P4USER" -P "${P4PASSWD}" --case="$P4CASE" "${opts[@]}"
 
 p4 configure set $P4NAME#server.depot.root=$P4DEPOTS
 p4 configure set $P4NAME#journalPrefix=$P4CKP/$JNL_PREFIX
 
-p4dctl start -t p4d "$NAME"
+# Stopping the server so the previous configuration are taken into account
+p4dctl stop -t p4d "$P4NAME"
