@@ -1,27 +1,34 @@
 # --------------------------------------------------------------------------------
 # Docker configuration for P4D
 # --------------------------------------------------------------------------------
-
-FROM ubuntu:focal
+# Ubuntu noble and 24.04 are the same, but noble is the codename for 24.04
+FROM ubuntu:24.04
 
 LABEL vendor="Sourcegraph"
 LABEL maintainer="Joe Chen (joe@sourcegraph.com)"
 
-# Update Ubuntu and add Perforce Package Source
 RUN apt-get update && \
-  apt-get install -y wget gnupg2 && \
-  wget -qO - https://package.perforce.com/perforce.pubkey | apt-key add - && \
-  echo "deb http://package.perforce.com/apt/ubuntu focal release" > /etc/apt/sources.list.d/perforce.list && \
-  apt-get update
+  apt-get install -y wget gnupg2
 
 # --------------------------------------------------------------------------------
 # Docker BUILD
 # --------------------------------------------------------------------------------
 
 # Create perforce user and install Perforce Server
-# Do in-page search over https://package.perforce.com/apt/ubuntu/dists/focal/release/binary-amd64/Packages
-# for both "Package: helix-p4d" and "Package: helix-swarm-triggers".
-RUN apt-get update && apt-get install -y helix-p4d=2024.1-2625008~focal helix-swarm-triggers=2024.3-2628402~focal
+# Do in-page search over https://package.perforce.com/apt/ubuntu/dists/noble/release/binary-amd64/Packages
+# for "Package: helix-p4d"
+# Update Ubuntu and add Perforce Package Source
+RUN apt-get update && apt-get install -y wget gnupg && \
+  wget -qO - https://package.perforce.com/perforce.pubkey | gpg --dearmor -o /etc/apt/keyrings/perforce.gpg && \
+  echo "deb [signed-by=/etc/apt/keyrings/perforce.gpg] http://package.perforce.com/apt/ubuntu noble release" > /etc/apt/sources.list.d/perforce.list && \
+  apt-get update && \
+  apt-get install -y helix-p4d=2026.1-2951233~noble
+
+RUN apt-get remove -y wget gnupg2 && \
+  apt-get autoremove -y && \
+  apt-get clean -y && \
+  rm -rf /var/lib/apt/lists/*
+
 # Add external files
 COPY files/restore.sh /usr/local/bin/restore.sh
 COPY files/setup.sh /usr/local/bin/setup.sh
