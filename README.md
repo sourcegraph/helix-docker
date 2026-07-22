@@ -21,24 +21,23 @@ To have a disposable Perforce Helix core server running, simply do:
 ```sh
 docker run --rm \
     --publish 1666:1666 \
-    sourcegraph/helix-p4d:2023.1
+    sourcegraph/helix-p4d:latest
 ```
 
 The above command makes the server avaialble locally at `:1666`, with a default super user `admin` and its password `pass12349ers`.
 
+#### Environment variables
 All available options and their default values:
 
 ```sh
-NAME=perforce-server
 P4HOME=/p4
-P4NAME=master
+P4NAME=perforce-server
 P4TCP=1666
 P4PORT=1666
 P4USER=admin
 P4PASSWD=pass12349ers
 P4CASE=-C0
 P4CHARSET=utf8
-JNL_PREFIX=perforce-server
 ```
 
 Use the `--env` flag to override default:
@@ -48,12 +47,13 @@ docker run --rm \
     --publish 1666:1666 \
     --env P4USER=amy \
     --env P4PASSWD=securepassword \
-    sourcegraph/helix-p4d:2023.1
+    sourcegraph/helix-p4d:latest
 ```
 
 > [!WARNING]
 > Please be noted that although the server survives over restarts (i.e. data are kept), but it may break if you change the options after the initial bootstrap (i.e. the very first run of the image, at when options are getting hard-coded to the Perforce Helix core server own configuration).
 
+#### Volumes
 To start a long-running production container, do remember to volume the data directory (`P4HOME`) and replace the `--rm` flag with `-d` (detach):
 
 ```sh
@@ -61,7 +61,7 @@ docker run -d \
     --publish 1666:1666 \
     --env P4PASSWD=securepassword \
     --volume ~/.helix-p4d-home:/p4 \
-    sourcegraph/helix-p4d:2023.1
+    sourcegraph/helix-p4d:latest
 ```
 
 Now you have a running server, please read our handbook for [how to set up the client side](https://handbook.sourcegraph.com/departments/technical-success/support/process/p4-enablement/).
@@ -93,4 +93,19 @@ docker run --rm \
 
 ## Credits
 
-This repository is heavily inspired by https://github.com/p4paul/helix-docker and https://github.com/ambakshi/docker-perforce.
+This repository is heavily inspired by https://github.com/p4paul/helix-docker and https://github.com/ambakshi/docker-perforce
+
+## Fork
+
+The fork was done to allow some changes
+- Update of the dependancies
+  - Ubuntu focal to noble (no support for racoon ATM)
+  - Helix perforce to 2026.1
+- Removed helix swarm
+- Changed the whole restore checkpoint logic
+- Improvements
+  - Unified folder name
+  - Unified the use of the setup in each case to configure and start the server
+  - Use of p4dctl
+- Fixes
+ - Charset when there is no one selected

@@ -46,8 +46,7 @@ RUN \
 # --------------------------------------------------------------------------------
 
 # Default Environment
-ARG NAME=perforce-server
-ARG P4NAME=master
+ARG P4NAME=perforce-server
 ARG P4TCP=1666
 ARG P4USER=admin
 ARG P4PASSWD=pass12349ers
@@ -55,8 +54,7 @@ ARG P4CASE=-C0
 ARG P4CHARSET=utf8
 
 # Dynamic Environment
-ENV NAME=$NAME \
-  P4NAME=$P4NAME \
+ENV P4NAME=$P4NAME \
   P4TCP=$P4TCP \
   P4PORT=$P4TCP \
   P4USER=$P4USER \
@@ -83,7 +81,7 @@ VOLUME $P4HOME
 
 ENTRYPOINT \
   init.sh && \
-  /usr/bin/tail -F $P4ROOT/logs/log
+  /usr/bin/tail -F $P4HOME/logs/log
 
 HEALTHCHECK \
   --interval=2m \
