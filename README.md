@@ -53,6 +53,9 @@ docker run --rm \
 > [!WARNING]
 > Please be noted that although the server survives over restarts (i.e. data are kept), but it may break if you change the options after the initial bootstrap (i.e. the very first run of the image, at when options are getting hard-coded to the Perforce Helix core server own configuration).
 
+`P4CASE` : `-C0` means Unix-style and `-C1` Windows-style (only these 2 values are valid)
+`P4CHARSET` : `none` and `utf8` are the only valid values
+
 #### Volumes
 To start a long-running production container, do remember to volume the data directory (`P4HOME`) and replace the `--rm` flag with `-d` (detach):
 
@@ -90,6 +93,12 @@ docker run --rm \
     --volume ./ssl:/ssl \
     sourcegraph/helix-p4d:2023.1
 ```
+
+### Restore from a checkpoint
+With a journal and checkpoint, generate a gz file
+Put them in the folder `/p4/checkpoints/` (`$P4CKP`)
+Create a simlink to the gz file named latest in the folder `$P4CKP`
+Run the container, it will generate the DB from the checkpoint and remove the sym link. The gz can be removed once you're good with it.
 
 ## Credits
 
