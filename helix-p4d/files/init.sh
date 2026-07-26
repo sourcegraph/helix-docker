@@ -26,6 +26,3 @@ EOF
 
 echo "Perforce Server [RUNNING] with the following configuration"
 until p4 info -s 2> /dev/null; do sleep 1; done
-
-## Remove all triggers
-echo "Triggers:" | p4 triggers -i
