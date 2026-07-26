@@ -33,13 +33,11 @@ RUN apt-get remove -y wget gnupg2 && \
 COPY files/restore.sh /usr/local/bin/restore.sh
 COPY files/setup.sh /usr/local/bin/setup.sh
 COPY files/init.sh /usr/local/bin/init.sh
-COPY files/latest_checkpoint.sh /usr/local/bin/latest_checkpoint.sh
 
 RUN \
   chmod +x /usr/local/bin/restore.sh && \
   chmod +x /usr/local/bin/setup.sh && \
-  chmod +x /usr/local/bin/init.sh && \
-  chmod +x /usr/local/bin/latest_checkpoint.sh
+  chmod +x /usr/local/bin/init.sh
 
 # --------------------------------------------------------------------------------
 # Docker ENVIRONMENT
