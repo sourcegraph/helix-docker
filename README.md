@@ -55,6 +55,7 @@ docker run --rm \
 
 `P4CASE` : `-C0` means Unix-style and `-C1` Windows-style (only these 2 values are valid)
 `P4CHARSET` : `none` and `utf8` are the only valid values
+`JNL_PREFIX` : prefix for the perforce journal file
 
 #### Volumes
 To start a long-running production container, do remember to volume the data directory (`P4HOME`) and replace the `--rm` flag with `-d` (detach):
