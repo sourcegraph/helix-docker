@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y wget gnupg && \
   wget -qO - https://package.perforce.com/perforce.pubkey | gpg --dearmor -o /etc/apt/keyrings/perforce.gpg && \
   echo "deb [signed-by=/etc/apt/keyrings/perforce.gpg] http://package.perforce.com/apt/ubuntu noble release" > /etc/apt/sources.list.d/perforce.list && \
   apt-get update && \
-  apt-get install -y helix-p4d=2026.1-2951233~noble
+  apt-get install -y helix-p4d=2026.1-2972966~noble
 
 RUN apt-get remove -y wget gnupg2 && \
   apt-get autoremove -y && \
