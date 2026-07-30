@@ -18,6 +18,13 @@ if [ -L "$P4CKP/latest" ]; then
 	exit 0
 fi
 
+# Configure the server on a fresh install when no instance is registered
+# Header of p4dctl list and the message when there is no instance are ouput to stderr.
+if [ -z "$(p4dctl list 2>/dev/null)" ]; then
+    echo "[INFO] No existing server configuration detected. Running setup..."
+    setup.sh
+fi
+
 # Start the server
 echo "[INFO] Starting Server..."
 p4dctl start -t p4d "$P4NAME"

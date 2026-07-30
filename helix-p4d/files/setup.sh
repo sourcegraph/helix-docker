@@ -50,7 +50,7 @@ fi
 #    -u <username>          - P4 super-user login name
 #    -P <password>          - P4 super-user password
 #    --unicode              - Enable unicode mode on server
-#    --case              - Case-sensitivity (0=sensitive[default],1=insensitive)
+#    --case                 - Case-sensitivity (0=sensitive[default],1=insensitive)
 #
 #    Password is only needed on initial configuration when the super-user
 #    account is created. If reconfiguring an existing Perforce Server, the
