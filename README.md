@@ -6,6 +6,12 @@ This repository contains a collection of source files for building Docker images
 
 This directory contains the source files for building a Perforce Helix core server Docker image. The published Docker images are available as [`sourcegraph/helix-p4d` on Docker Hub](https://hub.docker.com/r/sourcegraph/helix-p4d).
 
+### Default server configuration
+
+- `security` : 2 instead of 4
+- `server.depots.root` : `P4DEPOTS`
+- `journalPrefix` : `P4CKP/JNL_PREFIX`
+
 ### Build the docker image
 
 The `helix-p4d/build.sh` script will build the docker image for you. If you don't provide a tag to the script it will tag the image as `sourcegraph/helix-p4d:latest`
