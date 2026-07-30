@@ -106,6 +106,7 @@ With a journal and checkpoint, generate a gz file
 Put them in the folder `/p4/checkpoints/` (`$P4CKP`)
 Create a simlink to the gz file named latest in the folder `$P4CKP`
 Run the container, it will generate the DB from the checkpoint and remove the sym link. The gz can be removed once you're good with it.
+Triggers are removed.
 
 ## Credits
 

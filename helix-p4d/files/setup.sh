@@ -72,5 +72,11 @@ p4 configure set $P4NAME#security=2
 p4 configure set $P4NAME#server.depot.root=$P4DEPOTS
 p4 configure set $P4NAME#journalPrefix=$P4CKP/$JNL_PREFIX
 
+# In the case where we restore a checkpoint, we must ensure that triggers are removed
+echo "[INFO] Existing triggers :"
+p4 triggers -o
+echo "[INFO] Removing triggers ..."
+echo "Triggers:" | p4 triggers -i
+
 # Stopping the server so the new configuration is taken into account
 p4dctl stop -t p4d "$P4NAME"

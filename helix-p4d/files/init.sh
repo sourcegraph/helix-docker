@@ -30,4 +30,5 @@ echo "[INFO] Starting Server..."
 p4dctl start -t p4d "$P4NAME"
 
 echo "[INFO] Server [RUNNING] with the following configuration"
-until p4 configure show -s 2> /dev/null; do sleep 1; done
+until p4 info -s 2> /dev/null; do sleep 1; done
+until p4 configure show 2> /dev/null; do sleep 1; done
