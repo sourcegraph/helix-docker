@@ -26,6 +26,3 @@ echo $P4NAME > $P4ROOT/server.id
 echo "[INFO] Restoring checkpoint with option $P4CASE"
 p4d $P4CASE -r $P4ROOT -jr -z $P4CKP/latest
 p4d $P4CASE -r $P4ROOT -xu
-
-## Set key environment variables
-p4d $P4CASE -r $P4ROOT "-cset security=2"

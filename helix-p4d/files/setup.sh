@@ -62,9 +62,15 @@ fi
 #-------------------------------------------------------------------------------
 /opt/perforce/sbin/configure-helix-p4d.sh "$P4NAME" -n -p "$P4PORT" -r "$P4HOME" -u "$P4USER" -P "${P4PASSWD}" "${opts[@]}"
 
+# Server configuration is set to default security 4, so we need to get a ticket with p4 login to change configuration settings.
+p4 login <<EOF
+$P4PASSWD
+EOF
+
 echo "[INFO] Configuring server settings..."
+p4 configure set $P4NAME#security=2
 p4 configure set $P4NAME#server.depot.root=$P4DEPOTS
 p4 configure set $P4NAME#journalPrefix=$P4CKP/$JNL_PREFIX
 
-# Stopping the server so the previous configuration are taken into account
+# Stopping the server so the new configuration is taken into account
 p4dctl stop -t p4d "$P4NAME"
