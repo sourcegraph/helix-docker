@@ -3,9 +3,6 @@ name: Docker Build Check
 on:
   pull_request:
     branches: [main]
-    paths:
-      - 'helix-p4d/**'
-      - '.github/workflows/docker-build-check.yml'
 
 # Cancel any in-progress runs of this workflow for the same pull request number
 concurrency:
