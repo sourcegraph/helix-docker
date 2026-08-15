@@ -1,0 +1,39 @@
+name: Check helix-p4d Version
+
+on:
+  schedule:
+    # Every Sunday at 20:00 UTC
+    - cron: '0 20 * * 0'
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract current pinned version from Dockerfile
+        id: current
+        run: bash .github/scripts/p4d-version/get-current-version.sh
+
+      - name: Fetch latest available version from Perforce repo
+        id: latest
+        run: bash .github/scripts/p4d-version/get-latest-version.sh
+
+      - name: Compare versions and manage issue
+        if: steps.current.outputs.version != steps.latest.outputs.version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CURRENT_VERSION: ${{ steps.current.outputs.version }}
+          LATEST_VERSION: ${{ steps.latest.outputs.version }}
+          REPO: ${{ github.repository }}
+        run: bash .github/scripts/p4d-version/sync-issue.sh
+
+      - name: No update needed
+        if: steps.current.outputs.version == steps.latest.outputs.version
+        run: echo "Pinned version (${{ steps.current.outputs.version }}) is already up to date, nothing to do."
