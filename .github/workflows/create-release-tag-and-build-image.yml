@@ -1,34 +1,36 @@
-name: Release Docker Image
+name: Create Release Tag and Build Image
 
 on:
-  push:
-    tags:
-      - '[0-9]*.[0-9]*-[0-9]*-r[0-9]*'
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: Tag to release
-        required: true
-        type: string
+  workflow_dispatch: {}
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      # Always operate on main regardless of which branch was selected
+      # in the "Run workflow" dropdown.
+      - name: Checkout main
         uses: actions/checkout@v7
         with:
+          ref: main
           fetch-depth: 0
+
+      - name: Create and push release tag
+        id: tag
+        run: bash .github/scripts/release/create-release-tag.sh
 
       - name: Ensure main history is available
         run: git fetch origin main:refs/remotes/origin/main
 
       - name: Validate tag and extract version info
         id: version
+        env:
+          GITHUB_REF_NAME: ${{ steps.tag.outputs.tag }}
+          GITHUB_SHA: ${{ github.sha }}
         run: bash .github/scripts/release/validate-and-parse-tag.sh
 
       - name: Log in to GitHub Container Registry
@@ -50,7 +52,7 @@ jobs:
           tags: ${{ steps.version.outputs.tags }}
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.version=${{ github.ref_name }}
+            org.opencontainers.image.version=${{ steps.tag.outputs.tag }}
             org.opencontainers.image.created=${{ steps.version.outputs.created }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
