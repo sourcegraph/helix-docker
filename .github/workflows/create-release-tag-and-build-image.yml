@@ -1,0 +1,58 @@
+name: Create Release Tag and Build Image
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # Always operate on main regardless of which branch was selected
+      # in the "Run workflow" dropdown.
+      - name: Checkout main
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Create and push release tag
+        id: tag
+        run: bash .github/scripts/release/create-release-tag.sh
+
+      - name: Ensure main history is available
+        run: git fetch origin main:refs/remotes/origin/main
+
+      - name: Validate tag and extract version info
+        id: version
+        env:
+          RELEASE_TAG: ${{ steps.tag.outputs.tag }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: bash .github/scripts/release/validate-and-parse-tag.sh
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build and push image
+        uses: docker/build-push-action@v7
+        with:
+          context: ./helix-p4d
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.version.outputs.tags }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ steps.tag.outputs.tag }}
+            org.opencontainers.image.created=${{ steps.version.outputs.created }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
