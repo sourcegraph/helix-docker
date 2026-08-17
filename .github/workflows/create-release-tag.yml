@@ -1,0 +1,22 @@
+name: Create Release Tag
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      # Always operate on main regardless of which branch was selected
+      # in the "Run workflow" dropdown.
+      - name: Checkout main
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Create and push release tag
+        run: bash .github/scripts/release/create-release-tag.sh

@@ -4,8 +4,9 @@
 # Ubuntu noble and 24.04 are the same, but noble is the codename for 24.04
 FROM ubuntu:24.04
 
-LABEL vendor="Sourcegraph"
-LABEL maintainer="Joe Chen (joe@sourcegraph.com)"
+LABEL org.opencontainers.image.source="https://github.com/M3dinar/helix-docker"
+LABEL org.opencontainers.image.description="Perforce Helix Core (p4d) server, packaged for Docker."
+LABEL org.opencontainers.image.authors="M3dinar <M3dinar@users.noreply.github.com>"
 
 RUN apt-get update && \
   apt-get install -y wget gnupg2
