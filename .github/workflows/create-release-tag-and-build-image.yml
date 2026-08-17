@@ -29,7 +29,7 @@ jobs:
       - name: Validate tag and extract version info
         id: version
         env:
-          GITHUB_REF_NAME: ${{ steps.tag.outputs.tag }}
+          RELEASE_TAG: ${{ steps.tag.outputs.tag }}
           GITHUB_SHA: ${{ github.sha }}
         run: bash .github/scripts/release/validate-and-parse-tag.sh
 

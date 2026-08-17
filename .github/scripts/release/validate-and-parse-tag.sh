@@ -13,8 +13,13 @@
 # tags (multiline list of docker tags to build & push)
 set -euo pipefail
 
-TAG="${GITHUB_REF_NAME:?GITHUB_REF_NAME is required}"
+TAG="${RELEASE_TAG:-${GITHUB_REF_NAME:-}}"
 DOCKERFILE="helix-p4d/Dockerfile"
+
+if [[ -z "$TAG" ]]; then
+  echo "No release tag provided. Set RELEASE_TAG for workflows triggered manually; tag-triggered workflows use GITHUB_REF_NAME." >&2
+  exit 1
+fi
 
 if [[ ! "$TAG" =~ ^(([0-9]{4}\.[0-9]+)-([0-9]+))-r([0-9]+)$ ]]; then
   echo "Tag '$TAG' does not match the expected <year>.<release>-<build>-r<N> format (e.g. 2026.1-2972966-r2)" >&2
