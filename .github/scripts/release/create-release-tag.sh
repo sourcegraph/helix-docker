@@ -41,4 +41,5 @@ git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 git tag -a "$NEW_TAG" -m "Release $NEW_TAG"
 git push origin "$NEW_TAG"
 
-echo "Pushed tag $NEW_TAG. This will trigger the release workflow."
+echo "tag=$NEW_TAG" >> "$GITHUB_OUTPUT"
+echo "Pushed tag $NEW_TAG. Triggering the release workflow explicitly next."

@@ -19,4 +19,15 @@ jobs:
           fetch-depth: 0
 
       - name: Create and push release tag
+        id: tag
         run: bash .github/scripts/release/create-release-tag.sh
+
+      - name: Trigger release workflow for the new tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/actions/workflows/release.yml/dispatches \
+            -f ref="${{ steps.tag.outputs.tag }}"
